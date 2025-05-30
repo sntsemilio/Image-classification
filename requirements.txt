@@ -5,3 +5,6 @@ scipy==1.15.3
 streamlit==1.45.1
 tensorflow==2.18.0
 tensorflow_intel==2.18.0
+torch
+numpy
+tensorflow==2.7
