@@ -32,7 +32,7 @@ with st.expander("About this model", expanded=True):
 @st.cache_resource
 def load_model():
     try:
-        model_path = "A01665895_Deep_Leaning_image_classifier.pkl"  # Update this path to your actual model file
+        model_path = "A01665895_image_classifier.pkl"  # Update this path to your actual model file
         with open(model_path, 'rb') as file:
             model = pickle.load(file)
         return model
