@@ -73,6 +73,10 @@ if uploaded_file is not None:
             else:
                 st.write("**Dogs** are domesticated mammals known for their loyalty and companionship.")
 
+
+st.markdown("""
+Teacher i got kind of confused and i bassically didi the next delivery in this one, at the end it does what its supposed to sorry :)
+""")
 # Footer
 st.markdown("---")
 st.caption("Developed by @sntsemilio")
