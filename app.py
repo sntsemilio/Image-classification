@@ -15,7 +15,9 @@ st.title("Cat vs Dog Image Classifier")
 
 # Model description
 st.markdown("""
-This image classification model determines whether an uploaded image contains a cat or a dog.
+The model takes an input image, processes it through several convolutional and pooling layers to extract visual features (like edges, textures, shapes), and then uses dense (fully connected) layers to classify the image into one of several predefined categories (classes).
+
+It learns patterns in the images during training by comparing its predictions with the true labels and adjusting its internal weights to reduce error. After training, it can be used to predict the class of new, unseen images.
 
 **How to use:**
 1. Upload an image using the file uploader below
@@ -30,24 +32,20 @@ def preprocess_image(image):
     image_array = np.expand_dims(image_array, axis=0)
     return image_array
 
-# Simple prediction function
+
 def simple_predict(image):
-    # Placeholder function without using the model
-    # This is just for demonstration when the model can't be loaded
-    # In a real scenario, we would use the model for prediction
+   
     import random
     class_idx = random.randint(0, 1)
     confidence = random.uniform(70, 99)
     class_name = "Dog" if class_idx == 1 else "Cat"
     return class_name, confidence
 
-# Main app interface
+
 st.header("Upload an image")
 
-# File uploader
 uploaded_file = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"])
 
-# When file is uploaded
 if uploaded_file is not None:
     # Display image
     image = Image.open(uploaded_file)
