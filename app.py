@@ -76,6 +76,8 @@ if uploaded_file is not None:
 
 st.markdown("""
 Teacher i got kind of confused and i bassically didi the next delivery in this one, at the end it does what its supposed to sorry :)
+            
+It really important that this isnt actually making a rediction so it doesnt work the connection could be realized because streamlit doesnt support tensorflow or keras.
 """)
 # Footer
 st.markdown("---")
