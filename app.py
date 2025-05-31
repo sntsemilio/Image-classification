@@ -3,7 +3,6 @@ import pickle
 import numpy as np
 from PIL import Image
 import os
-import keras
 
 # Page configuration
 st.set_page_config(
@@ -20,7 +19,7 @@ with st.expander("About this model", expanded=True):
     st.markdown("""
     This image classification model determines whether an uploaded image contains a cat or a dog.
     
-    The model was built using Keras and trained on a dataset of cat and dog images.
+    The model was trained on a dataset of cat and dog images to classify them into two categories.
     
     **How to use:**
     1. Upload an image of a cat or dog using the file uploader below
@@ -44,6 +43,7 @@ def load_model():
         return model
     except Exception as e:
         st.error(f"Error loading model: {e}")
+        st.error(f"Details: {type(e).__name__}")
         return None
 
 # Function to preprocess image before prediction
@@ -68,33 +68,41 @@ def predict(image, model):
         # Preprocess the image
         processed_image = preprocess_image(image)
         
-        # Make prediction
-        prediction = model.predict(processed_image)
+        # This is a simplified prediction approach
+        # The actual method depends on your model type
+        # We'll try different approaches
         
-        # Get predicted class - handling both possible formats
+        try:
+            # Method 1: Direct predict
+            prediction = model.predict(processed_image)
+        except AttributeError:
+            # Method 2: Try __call__ method (for some models)
+            try:
+                prediction = model(processed_image)
+            except:
+                # Method 3: For scikit-learn models
+                # Flatten the image if needed
+                flat_image = processed_image.reshape(1, -1)
+                prediction = model.predict_proba(flat_image)
+        
+        # Get class and confidence
         if hasattr(model, 'classes_'):
-            class_idx = np.argmax(prediction, axis=1)[0]
-            class_name = model.classes_[class_idx]
+            class_idx = np.argmax(prediction[0]) if prediction.ndim > 1 else 1 if prediction[0] > 0.5 else 0
+            class_names = model.classes_
+            class_name = class_names[class_idx]
         else:
-            # For binary classification, the output might be a single value
+            # Binary classification - assume 0=cat, 1=dog
             if isinstance(prediction, np.ndarray):
-                if prediction.ndim > 1:
+                if prediction.ndim > 1 and prediction.shape[1] > 1:
                     class_idx = np.argmax(prediction[0])
                 else:
                     class_idx = 1 if prediction[0] > 0.5 else 0
                 
-                # Determine confidence
-                if prediction.ndim > 1:
-                    confidence = float(prediction[0][class_idx]) * 100
-                else:
-                    # For single value output, typically 0=cat, 1=dog with sigmoid activation
-                    prob_value = float(prediction[0])
-                    confidence = prob_value * 100 if class_idx == 1 else (1 - prob_value) * 100
+                confidence = float(prediction[0][class_idx]) * 100 if prediction.ndim > 1 and prediction.shape[1] > 1 else float(prediction[0]) * 100 if class_idx == 1 else (1 - float(prediction[0])) * 100
             else:
                 class_idx = 1 if prediction > 0.5 else 0
                 confidence = float(prediction) * 100 if class_idx == 1 else (1 - float(prediction)) * 100
-
-            # Set class name based on index (typically 0=cat, 1=dog)
+            
             class_name = "Dog" if class_idx == 1 else "Cat"
             
         return class_name, confidence
@@ -127,7 +135,7 @@ else:
 
 # When file is uploaded
 if uploaded_file is not None:
-    # Display image
+    # Display image - using use_container_width instead of use_column_width
     image = Image.open(uploaded_file)
     st.image(image, caption="Uploaded Image", use_container_width=True)
     
