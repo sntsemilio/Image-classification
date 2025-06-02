@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 from PIL import Image
 from tensorflow import keras
+import pickle
 
 st.set_page_config(
     page_title="Cat vs Dog Classifier",
@@ -19,9 +20,11 @@ The model processes your image and predicts whether it's a cat or a dog.
 3. See the results!
 """)
 
-@st.cache_resource  # Use this to cache the model in Streamlit >=1.18.0
+@st.cache_resource
 def load_model():
-    return keras.models.load_model("cat_dog_classifier.h5")  # Update path as needed
+    with open("A01665895_image_classifier.pkl", "rb") as file:
+        model = pickle.load(file)
+    return model
 
 def preprocess_image(image):
     image = image.resize((224, 224))
