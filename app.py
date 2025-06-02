@@ -27,10 +27,9 @@ def load_model():
     return model
 
 def preprocess_image(image):
-    image = image.resize((224, 224))
-    image_array = np.array(image) / 255.0
-    if image_array.shape[-1] == 4:  # handle RGBA
-        image_array = image_array[..., :3]
+    image = image.resize((96, 96))  # change from (224, 224)
+    image_array = np.array(image)
+    image_array = image_array / 255.0
     image_array = np.expand_dims(image_array, axis=0)
     return image_array
 
